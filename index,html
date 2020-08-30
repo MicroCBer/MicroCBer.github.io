@@ -1,6 +1,6 @@
 <script>
   let searchers = [
-    {
+    { 
       addr: "https://www.google.com/",
       arg: "search?q={{q}}"
     },
