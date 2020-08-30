@@ -1,0 +1,48 @@
+<script>
+  let searchers = [
+    {
+      addr: "https://www.google.com/",
+      arg: "search?q={{q}}"
+    },
+    {
+      addr: "https://duckduckgo.com/",
+      arg: "?q={{q}}"
+    },
+    {
+      addr: "https://cn.bing.com/",
+      arg: "search?q={{q}}"
+    },
+    {
+      addr: "https://www.baidu.com/",
+      arg: "/s?wd={{q}}"
+    }
+  ]
+  function testSearcher(addr) {
+    let ts = new Date().valueOf(), rs
+    fetch(addr).catch((a) => {
+      rs(new Date().valueOf() - ts)
+      rs = () => { }
+    })
+    setTimeout(() => {
+      rs(-1);
+    }, 250)
+    return new Promise((r) => { rs = r })
+  }
+  searchers.forEach(async (a) => {
+    a.ts = await testSearcher(a.addr)
+  })
+  function test() {
+    if (searchers.length > 0) {
+      if (searchers[0].ts == undefined) setTimeout(test, 100);
+      else if (searchers[0].ts == -1) {
+        searchers.shift()
+        setTimeout(test, 100);
+      }
+      else {
+        document.location.href = searchers[0].addr + searchers[0].arg.replace("{{q}}", document.location.href.split("?").pop())
+      }
+
+    }
+  }
+  test()
+</script>
